@@ -7,7 +7,8 @@ int main() {
 
     Node *sha;
     char str[50];
-    char str2[10];
+
+    char *aux;
 
     char constant[6];
 
@@ -25,22 +26,55 @@ int main() {
 
         printf("\n CONDITION TO SEARCH (LIM. 4) : ");
         color(GREY);
-        scanf_s("%4[a-zA-Z]", &constant, 6);
+        bool validInput = true;
+        do {
+            fflush(stdin);
+            fgets(constant, 6, stdin);
+            validInput = true;
+            for (int i = 0; i < strlen(constant) - 1; i++) {
+                //   a-z  A-Z                    0 - 9
+                if (!isalpha(constant[i]) && !isdigit(constant[i])) {
+                    validInput = false;
+                    system("cls");
+                    color(LIGHTGREEN);
+                    printf("\n TOKEN : ");
+                    color(GREY);
+                    printf("%s\n", str);
+                    color(LIGHTGREEN);
+                    printf("\n HASH EXAMPLE : ");
+                    color(GREY);
+                    printf("889d785a6be46c7d19582b06cd307d3bca51cafd24d37a06ad4624438b0500b1 \n");
+                    color(LIGHTGREEN);
+                    printf("\n CONDITION TO SEARCH (LIM. 4) : ");
+                    color(GREY);
+                    break;
+                }
+            }
+        } while (!validInput);
 
         char *constant2 = (char *)malloc(sizeof(char) * strlen(constant));
+        aux = (char *)malloc(sizeof(char) * strlen(constant) - 1);
         strcpy(constant2, constant);
 
-        printf(" %c", constant2[0]);
-
+        strncpy(aux, constant2, strlen(constant) - 1);
         sha = sha256(str, constant2);
         color(LIGHTGREEN);
-        printf("\n > Se encontro - \" %s \" \n", str);
+        printf("\n > A Hash wich data is \"%s\" and starts with \"%s\" has been founded!.\n\n", str, aux);
         insertLatest(&list, sha);
-        printf(" > GO! ");
-        system("pause > nul");
+        color(LIGHTMAGENTA);
 
+        printf(" > PRESS ESC TO EXIT OR ANY KEY TO CONTINUE\n");
+        if (getch() == '\e') {
+
+            break;
+        }
+        system("cls");
+
+        free(aux);
         free(constant2);
     }
+
+    printf("\n Mostrando blockchain...\n");
 
     showList(&list);
 
@@ -84,16 +118,16 @@ Node *sha256(BYTE *text, char *constant) {
 
         for (int i = 0; i < strlen(constant) - 1; i++) {
             if (tmp[i] != constant[i]) {
-                printf("\n%c != %c\t%d\n", tmp[i], constant[i], strlen(constant) - 1);
 
                 isValid = false;
                 break;
-            } else {
-                printf("\n%c == %c\t%d\n", tmp[i], constant[i], strlen(constant) - 1);
             }
-            system("pause > nul");
         }
         color(GREY);
+
+        if (isValid) {
+            color(YELLOW);
+        }
         printHex(buf);
 
         nonce++;
@@ -133,11 +167,11 @@ void insertLatest(List *node, Node *info) {
 
 void showSingle(Info info) {
     color(GREY);
-    printf("\nEl nonce ganador para \" ");
+    printf("\n > The winning Nonce \"");
     color(LIGHTMAGENTA);
-    printf("%s \"", info.text);
+    printf("%s", info.text);
     color(GREY);
-    printf(" es: %d.", info.nonce);
+    printf("\" es: %d.", info.nonce);
 }
 
 void showList(List *list) {

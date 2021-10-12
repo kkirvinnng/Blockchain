@@ -1,6 +1,7 @@
 #pragma once
 
 #include "sha-256.h"
+#include <conio.h>
 #include <ctype.h>
 #include <malloc.h>
 #include <stdbool.h>
