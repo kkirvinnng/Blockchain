@@ -32,8 +32,8 @@ int main() {
             fgets(constant, 6, stdin);
             validInput = true;
             for (int i = 0; i < strlen(constant) - 1; i++) {
-                //   a-z  A-Z                    0 - 9
-                if (!isalpha(constant[i]) && !isdigit(constant[i])) {
+                //    c[i]  > f        ||    c[i]    < a             0 - 9
+                if ((constant[i] > 102 || constant[i] < 97) && !isdigit(constant[i])) {
                     validInput = false;
                     system("cls");
                     color(LIGHTGREEN);
@@ -53,10 +53,14 @@ int main() {
         } while (!validInput);
 
         char *constant2 = (char *)malloc(sizeof(char) * strlen(constant));
-        aux = (char *)malloc(sizeof(char) * strlen(constant) - 1);
+        aux = (char *)calloc(sizeof(char), strlen(constant));
         strcpy(constant2, constant);
 
-        strncpy(aux, constant2, strlen(constant) - 1);
+        strncpy(aux, constant2, strlen(constant)-1);
+        if(strlen(aux) > 4){
+            aux[4] = '\0';
+        }
+
         sha = sha256(str, constant2);
         color(LIGHTGREEN);
         printf("\n > A Hash wich data is \"%s\" and starts with \"%s\" has been found!.\n\n", str, aux);
@@ -74,7 +78,7 @@ int main() {
         free(constant2);
     }
 
-    printf("\n Mostrando blockchain...\n");
+    printf("\n Showing blockchain...\n");
 
     showList(&list);
 
@@ -167,11 +171,11 @@ void insertLatest(List *node, Node *info) {
 
 void showSingle(Info info) {
     color(GREY);
-    printf("\n > The winning Nonce \"");
+    printf("\n > The nonce found for \"");
     color(LIGHTMAGENTA);
     printf("%s", info.text);
     color(GREY);
-    printf("\" es: %d.", info.nonce);
+    printf("\" is: %d.", info.nonce);
 }
 
 void showList(List *list) {
