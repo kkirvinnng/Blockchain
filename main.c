@@ -59,7 +59,7 @@ int main() {
         strncpy(aux, constant2, strlen(constant) - 1);
         sha = sha256(str, constant2);
         color(LIGHTGREEN);
-        printf("\n > A Hash wich data is \"%s\" and starts with \"%s\" has been founded!.\n\n", str, aux);
+        printf("\n > A Hash wich data is \"%s\" and starts with \"%s\" has been found!.\n\n", str, aux);
         insertLatest(&list, sha);
         color(LIGHTMAGENTA);
 
