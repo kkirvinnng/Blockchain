@@ -44,13 +44,26 @@ enum Colors {
     WHITE
 };
 
+ void gotoxy(int x,int y){  
+      HANDLE hcon;  
+      hcon = GetStdHandle(STD_OUTPUT_HANDLE);  
+      COORD dwPos;  
+      dwPos.X = x;  
+      dwPos.Y= y;  
+      SetConsoleCursorPosition(hcon,dwPos);  
+ }  
+
 Node *sha256(BYTE *text, char *constant);
 Node *saveInfo(BYTE *text, int nonce);
+Node *encryptData();
 void printHex(unsigned char *data);
 
 void insertLatest(List *node, Node *info);
 void showSingle(Info info);
 void showList(List *list);
 void clearList(List *list);
-
+void addDataEncrypted(List *list);
 void color(int value);
+
+int selectMenuOption();
+void menu();

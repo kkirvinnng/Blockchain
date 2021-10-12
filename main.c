@@ -1,88 +1,145 @@
 #include "main.h"
+
 #include "sha-256.h"
 
 int main() {
-
     List list = {NULL, NULL};
 
-    Node *sha;
-    char str[50];
-
-    char *aux;
-
-    char constant[6];
-
-    while (1) {
-        color(LIGHTGREEN);
-        printf("\n TOKEN : ");
-        color(GREY);
-        fflush(stdin);
-        gets(str);
-        color(LIGHTGREEN);
-        printf("\n HASH EXAMPLE : ");
-        color(GREY);
-        printf("889d785a6be46c7d19582b06cd307d3bca51cafd24d37a06ad4624438b0500b1 \n");
-        color(LIGHTGREEN);
-
-        printf("\n CONDITION TO SEARCH (LIM. 4) : ");
-        color(GREY);
-        bool validInput = true;
-        do {
-            fflush(stdin);
-            fgets(constant, 6, stdin);
-            validInput = true;
-            for (int i = 0; i < strlen(constant) - 1; i++) {
-                //    c[i]  > f        ||    c[i]    < a             0 - 9
-                if ((constant[i] > 102 || constant[i] < 97) && !isdigit(constant[i])) {
-                    validInput = false;
-                    system("cls");
-                    color(LIGHTGREEN);
-                    printf("\n TOKEN : ");
-                    color(GREY);
-                    printf("%s\n", str);
-                    color(LIGHTGREEN);
-                    printf("\n HASH EXAMPLE : ");
-                    color(GREY);
-                    printf("889d785a6be46c7d19582b06cd307d3bca51cafd24d37a06ad4624438b0500b1 \n");
-                    color(LIGHTGREEN);
-                    printf("\n CONDITION TO SEARCH (LIM. 4) : ");
-                    color(GREY);
-                    break;
-                }
-            }
-        } while (!validInput);
-
-        char *condition = (char *)malloc(sizeof(char) * strlen(constant));
-        aux = (char *)calloc(sizeof(char), strlen(constant));
-        strcpy(condition, constant);
-
-        strncpy(aux, condition, strlen(constant) - 1);
-
-        sha = sha256(str, condition);
-        insertLatest(&list, sha);
-
-        color(LIGHTGREEN);
-        printf("\n > A Hash wich data is \"%s\" and starts with \"%s\" has been found!.\n\n", str, aux);
-        color(LIGHTMAGENTA);
+    while(1){
+        switch(selectMenuOption()){
+            case 0:
+                break;
+            case 1:
+                break;
+            default:
+                break;
+        }
 
         printf(" > PRESS ESC TO EXIT OR ANY KEY TO CONTINUE\n");
-        if (getch() == '\e') {
-
-            break;
-        }
+        if (getch() == '\e') break;
         system("cls");
-
-        free(aux);
-        free(condition);
     }
+    addDataEncrypted(&list);
     color(LIGHTCYAN);
-    printf("\n   SHOWING BLOCKCHAIN \n");
+    printf("\n   SHOWING BLOCKCHAIN...");
 
     showList(&list);
-
     clearList(&list);
 
     return 0;
+}
+
+int selectMenuOption(){
+    int i;
+    bool enter = false;
+    gotoxy(6, 3);
+    color(WHITE);
+    printf(">");
+
+    do{
+        i = 0;
+        char c;
+        menu();
+        switch(c = getch()){
+            case 72: // UP
+                i = i > 0 ? i-=1 : i;
+                break;
+            case 80: // DOWN
+                i = i < 1 ? i+=1 : i;
+                break;
+            case '\r':
+                enter = true;
+                break;
+        }
+        system("cls");
+
+        gotoxy(6, 3 + (i*2));
+        color(WHITE);
+        printf(">");
+    } while (!enter);
+}
+
+void menu() {
+    color(LIGHTCYAN);
+    gotoxy(8, 3);
+    printf("ENCRYPT AND ADD DATA TO BLOCKCHAIN");
+    gotoxy(8, 5);
+    printf("JUST ENCRYPT DATA");
+}
+
+void addDataEncrypted(List *list) {
+    Node *sha;
+    while(1){
+        sha = encryptData();
+        insertLatest(list, sha);
+
+        color(LIGHTMAGENTA);
+        printf(" > PRESS ESC TO EXIT OR ANY KEY TO CONTINUE\n");
+        if (getch() == '\e') break;
+        system("cls");
+    }
+}
+
+Node *encryptData() {
+    Node *sha;
+    char str[50];
+    char *aux;
+    char constant[6];
+
+    color(LIGHTGREEN);
+    printf("\n TOKEN : ");
+    color(GREY);
+    fflush(stdin);
+    gets(str);
+    color(LIGHTGREEN);
+    printf("\n HASH EXAMPLE : ");
+    color(GREY);
+    printf("889d785a6be46c7d19582b06cd307d3bca51cafd24d37a06ad4624438b0500b1 \n");
+    color(LIGHTGREEN);
+
+    printf("\n CONDITION TO SEARCH (LIM. 4) : ");
+    color(GREY);
+    bool validInput = true;
+    do {
+        fflush(stdin);
+        fgets(constant, 6, stdin);
+        validInput = true;
+        for (int i = 0; i < strlen(constant) - 1; i++) {
+            //    c[i]  > f        ||    c[i]    < a             0 - 9
+            if ((constant[i] > 102 || constant[i] < 97) && !isdigit(constant[i])) {
+                validInput = false;
+                system("cls");
+                color(LIGHTGREEN);
+                printf("\n TOKEN : ");
+                color(GREY);
+                printf("%s\n", str);
+                color(LIGHTGREEN);
+                printf("\n HASH EXAMPLE : ");
+                color(GREY);
+                printf("889d785a6be46c7d19582b06cd307d3bca51cafd24d37a06ad4624438b0500b1 \n");
+                color(LIGHTGREEN);
+                printf("\n CONDITION TO SEARCH (LIM. 4) : ");
+                color(GREY);
+                break;
+            }
+        }
+    } while (!validInput);
+
+    char *condition = (char *)malloc(sizeof(char) * strlen(constant));
+    aux = (char *)calloc(sizeof(char), strlen(constant));
+    strcpy(condition, constant);
+
+    strncpy(aux, condition, strlen(constant) - 1);
+
+    sha = sha256(str, condition);
+
+    color(LIGHTGREEN);
+    printf("\n > A HASH WICH DATA IS \"%s\" AND STARTS WITH \"%s\" HAS BEE FOUND!.\n\n", str, aux);
+    color(LIGHTMAGENTA);
+
+    free(aux);
+    free(condition);
+    return sha;
 }
 
 void printHex(unsigned char *data) {
@@ -94,7 +151,6 @@ void printHex(unsigned char *data) {
 }
 
 Node *sha256(BYTE *text, char *condition) {
-
     SHA256_Context ctx;
     BYTE buf[BLOCK_SIZE];
     int nonce = 1;
@@ -120,7 +176,6 @@ Node *sha256(BYTE *text, char *condition) {
 
         for (int i = 0; i < strlen(condition) - 1; i++) {
             if (tmp[i] != condition[i]) {
-
                 isValid = false;
                 break;
             }
@@ -140,7 +195,6 @@ Node *sha256(BYTE *text, char *condition) {
 }
 
 Node *saveInfo(BYTE *text, int nonce) {
-
     Node *new = (Node *)malloc(sizeof(Node));
 
     int length = snprintf(NULL, 0, "%d", nonce);
@@ -156,7 +210,6 @@ Node *saveInfo(BYTE *text, int nonce) {
 }
 
 void insertLatest(List *node, Node *info) {
-
     if (node->first == NULL) {
         node->first = info;
         node->latest = info;
