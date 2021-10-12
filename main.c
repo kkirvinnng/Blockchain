@@ -52,19 +52,17 @@ int main() {
             }
         } while (!validInput);
 
-        char *constant2 = (char *)malloc(sizeof(char) * strlen(constant));
+        char *condition = (char *)malloc(sizeof(char) * strlen(constant));
         aux = (char *)calloc(sizeof(char), strlen(constant));
-        strcpy(constant2, constant);
+        strcpy(condition, constant);
 
-        strncpy(aux, constant2, strlen(constant)-1);
-        if(strlen(aux) > 4){
-            aux[4] = '\0';
-        }
+        strncpy(aux, condition, strlen(constant) - 1);
 
-        sha = sha256(str, constant2);
+        sha = sha256(str, condition);
+        insertLatest(&list, sha);
+
         color(LIGHTGREEN);
         printf("\n > A Hash wich data is \"%s\" and starts with \"%s\" has been found!.\n\n", str, aux);
-        insertLatest(&list, sha);
         color(LIGHTMAGENTA);
 
         printf(" > PRESS ESC TO EXIT OR ANY KEY TO CONTINUE\n");
@@ -75,10 +73,10 @@ int main() {
         system("cls");
 
         free(aux);
-        free(constant2);
+        free(condition);
     }
-
-    printf("\n Showing blockchain...\n");
+    color(LIGHTCYAN);
+    printf("\n   SHOWING BLOCKCHAIN \n");
 
     showList(&list);
 
@@ -95,7 +93,7 @@ void printHex(unsigned char *data) {
     printf("\n");
 }
 
-Node *sha256(BYTE *text, char *constant) {
+Node *sha256(BYTE *text, char *condition) {
 
     SHA256_Context ctx;
     BYTE buf[BLOCK_SIZE];
@@ -120,8 +118,8 @@ Node *sha256(BYTE *text, char *constant) {
         color(LIGHTCYAN);
         printf(" > Nonce: %d\t", nonce);
 
-        for (int i = 0; i < strlen(constant) - 1; i++) {
-            if (tmp[i] != constant[i]) {
+        for (int i = 0; i < strlen(condition) - 1; i++) {
+            if (tmp[i] != condition[i]) {
 
                 isValid = false;
                 break;
@@ -172,10 +170,10 @@ void insertLatest(List *node, Node *info) {
 void showSingle(Info info) {
     color(GREY);
     printf("\n > The nonce found for \"");
-    color(LIGHTMAGENTA);
+    color(LIGHTCYAN);
     printf("%s", info.text);
     color(GREY);
-    printf("\" is: %d.", info.nonce);
+    printf("\" is: %d.\n", info.nonce);
 }
 
 void showList(List *list) {
