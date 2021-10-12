@@ -74,7 +74,7 @@ int main() {
         free(constant2);
     }
 
-    printf("\n Mostrando blockchain...\n");
+    printf("\n Showing blockchain...\n");
 
     showList(&list);
 
