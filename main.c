@@ -2,18 +2,24 @@
 
 #include "sha-256.h"
 
+sem_t mutex;
+
 int main() {
     List list = {NULL, NULL};
     Node *aux;
     int option;
+    pthread_t thread[2];
     do {
         option = selectMenuOption();
 
         system("cls");
         switch (option) {
             case 0:
-                aux = encryptData();
-                showSingle(aux->info);
+                aux = createThreadEncryptData();
+                pthread_create(&thread[0], NULL, showSingle, &aux->info);
+
+                // showSingle(aux->info);
+
                 system("pause > nul");
 
                 break;
@@ -58,7 +64,6 @@ int selectMenuOption() {
         } else {
             i = i;
         }
-        // fflush(stdin);
 
         Sleep(80);
         system("cls");
@@ -246,19 +251,21 @@ void insertLatest(List *node, Node *info) {
     }
 }
 
-void showSingle(Info info) {
+void *showSingle(Info *info) {
     color(LIGHTGREEN);
     printf("\n > Nonce found for ");
     color(LIGHTCYAN);
-    printf("\"%s\"", info.text);
+    printf("\"%s\"", info->text);
     color(LIGHTGREEN);
     printf(" in : ");
     color(LIGHTCYAN);
-    printf(" %d.\n", info.nonce);
+    printf(" %d\n", info->nonce);
+    pthread_exit(0);
 }
 
 void showList(List *list) {
     Node *aux = list->first;
+
     while (aux) {
         showSingle(aux->info);
         aux = aux->next;

@@ -62,7 +62,7 @@ Node *encryptData();
 void printHex(unsigned char *data);
 
 void insertLatest(List *node, Node *info);
-void showSingle(Info info);
+void *showSingle(Info *info);
 void showList(List *list);
 void clearList(List *list);
 void addDataEncrypted(List *list);
