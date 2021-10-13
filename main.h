@@ -9,6 +9,9 @@
 #include <string.h>
 #include <windows.h>
 
+#include <pthread.h>
+#include <semaphore.h>
+
 typedef struct Info {
     unsigned int nonce;
     BYTE *text;
@@ -44,14 +47,14 @@ enum Colors {
     WHITE
 };
 
- void gotoxy(int x,int y){  
-      HANDLE hcon;  
-      hcon = GetStdHandle(STD_OUTPUT_HANDLE);  
-      COORD dwPos;  
-      dwPos.X = x;  
-      dwPos.Y= y;  
-      SetConsoleCursorPosition(hcon,dwPos);  
- }  
+void gotoxy(int x, int y) {
+    HANDLE hcon;
+    hcon = GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD dwPos;
+    dwPos.X = x;
+    dwPos.Y = y;
+    SetConsoleCursorPosition(hcon, dwPos);
+}
 
 Node *sha256(BYTE *text, char *constant);
 Node *saveInfo(BYTE *text, int nonce);

@@ -4,24 +4,33 @@
 
 int main() {
     List list = {NULL, NULL};
+    Node *aux;
+    int option;
+    do {
+        option = selectMenuOption();
 
-    while(1){
-        switch(selectMenuOption()){
+        system("cls");
+        switch (option) {
             case 0:
+                aux = encryptData();
+                showSingle(aux->info);
+                system("pause > nul");
+
                 break;
             case 1:
+
+                addDataEncrypted(&list);
                 break;
             default:
                 break;
         }
 
-        printf(" > PRESS ESC TO EXIT OR ANY KEY TO CONTINUE\n");
-        if (getch() == '\e') break;
         system("cls");
-    }
-    addDataEncrypted(&list);
+    } while (option != 2);
+
     color(LIGHTCYAN);
-    printf("\n   SHOWING BLOCKCHAIN...");
+
+    printf("\tSHOWING BLOCKCHAIN...\n\n");
 
     showList(&list);
     clearList(&list);
@@ -29,34 +38,37 @@ int main() {
     return 0;
 }
 
-int selectMenuOption(){
-    int i;
+int selectMenuOption() {
+    int i = 0;
     bool enter = false;
     gotoxy(6, 3);
     color(WHITE);
     printf(">");
 
-    do{
-        i = 0;
-        char c;
+    do {
+        enter = false;
         menu();
-        switch(c = getch()){
-            case 72: // UP
-                i = i > 0 ? i-=1 : i;
-                break;
-            case 80: // DOWN
-                i = i < 1 ? i+=1 : i;
-                break;
-            case '\r':
-                enter = true;
-                break;
+        getch();
+        if (GetAsyncKeyState(0x26) & 0x8000) { //  Arriba
+            i = i > 0 ? i -= 1 : i;
+        } else if (GetAsyncKeyState(0x28) & 0x8000) { // Abajo
+            i = i < 2 ? i += 1 : i;
+        } else if (GetAsyncKeyState(0x0D) & 0x8000) { // Enter
+            enter = true;
+        } else {
+            i = i;
         }
-        system("cls");
+        // fflush(stdin);
 
-        gotoxy(6, 3 + (i*2));
+        Sleep(80);
+        system("cls");
+        gotoxy(6, 3 + (i * 2));
         color(WHITE);
         printf(">");
+        gotoxy(20, 2);
+
     } while (!enter);
+    return i;
 }
 
 void menu() {
@@ -65,17 +77,23 @@ void menu() {
     printf("ENCRYPT AND ADD DATA TO BLOCKCHAIN");
     gotoxy(8, 5);
     printf("JUST ENCRYPT DATA");
+    gotoxy(8, 7);
+    printf("EXIT");
 }
 
 void addDataEncrypted(List *list) {
     Node *sha;
-    while(1){
+    while (1) {
         sha = encryptData();
         insertLatest(list, sha);
 
         color(LIGHTMAGENTA);
+
         printf(" > PRESS ESC TO EXIT OR ANY KEY TO CONTINUE\n");
-        if (getch() == '\e') break;
+        if (getch() == '\e') {
+            system("cls");
+            break;
+        }
         system("cls");
     }
 }
@@ -87,7 +105,7 @@ Node *encryptData() {
     char constant[6];
 
     color(LIGHTGREEN);
-    printf("\n TOKEN : ");
+    printf("\n INSERT TOKEN : ");
     color(GREY);
     fflush(stdin);
     gets(str);
@@ -110,7 +128,7 @@ Node *encryptData() {
                 validInput = false;
                 system("cls");
                 color(LIGHTGREEN);
-                printf("\n TOKEN : ");
+                printf("\n INSERT TOKEN : ");
                 color(GREY);
                 printf("%s\n", str);
                 color(LIGHTGREEN);
@@ -134,11 +152,19 @@ Node *encryptData() {
     sha = sha256(str, condition);
 
     color(LIGHTGREEN);
-    printf("\n > A HASH WICH DATA IS \"%s\" AND STARTS WITH \"%s\" HAS BEE FOUND!.\n\n", str, aux);
-    color(LIGHTMAGENTA);
+    printf("\n > A HASH WICH DATA IS");
+    color(LIGHTCYAN);
+    printf(" \"%s\" ", str);
+    color(LIGHTGREEN);
+    printf("AND STARTS WITH");
+    color(LIGHTCYAN);
+    printf(" \"%s\" ", aux);
+    color(LIGHTGREEN);
+    printf("HAS BEE FOUND!.\n\n");
 
     free(aux);
     free(condition);
+
     return sha;
 }
 
@@ -221,12 +247,14 @@ void insertLatest(List *node, Node *info) {
 }
 
 void showSingle(Info info) {
-    color(GREY);
-    printf("\n > The nonce found for \"");
+    color(LIGHTGREEN);
+    printf("\n > Nonce found for ");
     color(LIGHTCYAN);
-    printf("%s", info.text);
-    color(GREY);
-    printf("\" is: %d.\n", info.nonce);
+    printf("\"%s\"", info.text);
+    color(LIGHTGREEN);
+    printf(" in : ");
+    color(LIGHTCYAN);
+    printf(" %d.\n", info.nonce);
 }
 
 void showList(List *list) {
